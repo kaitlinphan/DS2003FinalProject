@@ -29,5 +29,106 @@ rome_weekdays <- read.csv("rome_weekdays.csv")
 rome_weekends <- read.csv("rome_weekends.csv")
 vienna_weekdays <- read.csv("vienna_weekdays.csv")
 vienna_weekends <- read.csv("vienna_weekends.csv")
-head(amsterdam_weekdays)
+summary(amsterdam_weekdays)
+```
+
+```{r}
+library(cluster)    # clustering algorithms
+library(factoextra)
+set.seed(2003)
+amsterdam_weekdays_spatial <- amsterdam_weekdays[,c(2,13:20)]
+amsterdam_weekends_spatial <- amsterdam_weekends[,c(2,13:20)]
+athens_weekdays_spatial <- athens_weekdays[,c(2,13:20)]
+athens_weekends_spatial <- athens_weekends[,c(2,13:20)]
+barcelona_weekdays_spatial <- barcelona_weekdays[,c(2,13:20)]
+barcelona_weekends_spatial <- barcelona_weekends[,c(2,13:20)]
+berlin_weekdays_spatial <- berlin_weekdays[,c(2,13:20)]
+berlin_weekends_spatial <- berlin_weekends[,c(2,13:20)]
+budapest_weekdays_spatial <- budapest_weekdays[,c(2,13:20)]
+budapest_weekends_spatial <- budapest_weekends[,c(2,13:20)]
+lisbon_weekdays_spatial <- lisbon_weekdays[,c(2,13:20)]
+lisbon_weekends_spatial <- lisbon_weekends[,c(2,13:20)]
+london_weekdays_spatial <- london_weekdays[,c(2,13:20)]
+london_weekends_spatial <- london_weekends[,c(2,13:20)]
+paris_weekdays_spatial <- paris_weekdays[,c(2,13:20)]
+paris_weekends_spatial <- paris_weekends[,c(2,13:20)]
+rome_weekdays_spatial <- rome_weekdays[,c(2,13:20)]
+rome_weekends_spatial <- rome_weekends[,c(2,13:20)]
+vienna_weekdays_spatial <- vienna_weekdays[,c(2,13:20)]
+vienna_weekends_spatial <- vienna_weekends[,c(2,13:20)]
+```
+
+```{r}
+k <- kmeans(amsterdam_weekdays_spatial, centers = 4, nstart = 25)
+fviz_cluster(k, data = amsterdam_weekdays_spatial)
+```
+```{r}
+# function to compute average silhouette for k clusters
+avg_sil <- function(k) {
+  km.res <- kmeans(amsterdam_weekdays_spatial, centers = k, nstart = 25)
+  ss <- silhouette(km.res$cluster, dist(amsterdam_weekdays_spatial))
+  mean(ss[, 3])
+}
+
+# Compute and plot wss for k = 2 to k = 15
+k.values <- 2:15
+
+# extract avg silhouette for 2-15 clusters
+avg_sil_values <- map_dbl(k.values, avg_sil)
+
+plot(k.values, avg_sil_values,
+       type = "b", pch = 19, frame = FALSE, 
+       xlab = "Number of clusters K",
+       ylab = "Average Silhouettes")
+```
+
+```{r}
+fviz_nbclust(amsterdam_weekdays_spatial, kmeans, method = "silhouette")
+```
+
+```{r}
+
+final_amsterdam_weekdays <- kmeans(amsterdam_weekdays_spatial, 4, nstart = 25)
+final_amsterdam_weekends <- kmeans(amsterdam_weekends_spatial, 4, nstart = 25)
+```
+
+```{r}
+library(shiny)
+library(plotly)
+library(ggplot2)
+
+fig <- amsterdam_weekdays_spatial
+fig <- fig %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    colors = c("#ff595e", "#ffca3a", "#8ac926", "#1982c4"), 
+    marker = list(color = ~final_amsterdam_weekdays$cluster),
+    type = 'scattermapbox',
+    hovertext = ~paste(realSum, "Price")) 
+fig <- fig %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =2.5,
+      center = list(lon = 9, lat = 53))) 
+
+fig2 <- amsterdam_weekends_spatial
+fig2 <- fig2 %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    colors = c("#ff595e", "#ffca3a", "#8ac926", "#1982c4"), 
+    marker = list(color = ~final_amsterdam_weekends$cluster),
+    type = 'scattermapbox',
+    hovertext = ~paste(realSum, "Price")) 
+fig2 <- fig2 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =2.5,
+      center = list(lon = 9, lat = 53))) 
+
+fig
+fig2
 ```
