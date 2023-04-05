@@ -1,0 +1,33 @@
+---
+title: "FinalCleaningAndExploration"
+output: html_document
+date: "2023-04-05"
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+amsterdam_weekdays <- read.csv("amsterdam_weekdays.csv")
+amsterdam_weekends <- read.csv("amsterdam_weekends.csv")
+athens_weekdays <- read.csv("athens_weekdays.csv")
+athens_weekends <- read.csv("athens_weekends.csv")
+barcelona_weekdays <- read.csv("barcelona_weekdays.csv")
+barcelona_weekends <- read.csv("barcelona_weekends.csv")
+berlin_weekdays <- read.csv("berlin_weekdays.csv")
+berlin_weekends <- read.csv("berlin_weekends.csv")
+budapest_weekdays <- read.csv("budapest_weekdays.csv")
+budapest_weekends <- read.csv("budapest_weekends.csv")
+lisbon_weekdays <- read.csv("lisbon_weekdays.csv")
+lisbon_weekends <- read.csv("lisbon_weekends.csv")
+london_weekdays <- read.csv("london_weekdays.csv")
+london_weekends <- read.csv("london_weekends.csv")
+paris_weekdays <- read.csv("paris_weekdays.csv")
+paris_weekends <- read.csv("paris_weekends.csv")
+rome_weekdays <- read.csv("rome_weekdays.csv")
+rome_weekends <- read.csv("rome_weekends.csv")
+vienna_weekdays <- read.csv("vienna_weekdays.csv")
+vienna_weekends <- read.csv("vienna_weekends.csv")
+head(amsterdam_weekdays)
+```
