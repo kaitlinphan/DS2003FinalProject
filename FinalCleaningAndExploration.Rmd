@@ -11,62 +11,63 @@ library(tidyverse)
 ```{r}
 amsterdam_weekdays <- read.csv("amsterdam_weekdays.csv")
 amsterdam_weekends <- read.csv("amsterdam_weekends.csv")
+amsterdam <- bind_rows(amsterdam_weekdays, amsterdam_weekends, .id = 'set')
 athens_weekdays <- read.csv("athens_weekdays.csv")
 athens_weekends <- read.csv("athens_weekends.csv")
+athens <- bind_rows(athens_weekdays, athens_weekends, .id = 'set')
 barcelona_weekdays <- read.csv("barcelona_weekdays.csv")
 barcelona_weekends <- read.csv("barcelona_weekends.csv")
+barcelona <- bind_rows(barcelona_weekdays, barcelona_weekends, .id = 'set')
 berlin_weekdays <- read.csv("berlin_weekdays.csv")
 berlin_weekends <- read.csv("berlin_weekends.csv")
+berlin <- bind_rows(berlin_weekdays, berlin_weekends, .id = 'set')
 budapest_weekdays <- read.csv("budapest_weekdays.csv")
 budapest_weekends <- read.csv("budapest_weekends.csv")
+budapest <- bind_rows(budapest_weekdays, budapest_weekends, .id = 'set')
 lisbon_weekdays <- read.csv("lisbon_weekdays.csv")
 lisbon_weekends <- read.csv("lisbon_weekends.csv")
+lisbon <- bind_rows(lisbon_weekdays, lisbon_weekends, .id = 'set')
 london_weekdays <- read.csv("london_weekdays.csv")
 london_weekends <- read.csv("london_weekends.csv")
+london <- bind_rows(london_weekdays, london_weekends, .id = 'set')
 paris_weekdays <- read.csv("paris_weekdays.csv")
 paris_weekends <- read.csv("paris_weekends.csv")
+paris <- bind_rows(paris_weekdays, paris_weekends, .id = 'set')
 rome_weekdays <- read.csv("rome_weekdays.csv")
 rome_weekends <- read.csv("rome_weekends.csv")
+rome <- bind_rows(rome_weekdays, rome_weekends, .id = 'set')
 vienna_weekdays <- read.csv("vienna_weekdays.csv")
 vienna_weekends <- read.csv("vienna_weekends.csv")
-summary(amsterdam_weekdays)
+vienna <- bind_rows(vienna_weekdays, vienna_weekends, .id = 'set')
+summary(amsterdam)
 ```
 
 ```{r}
 library(cluster)    # clustering algorithms
 library(factoextra)
 set.seed(2003)
-amsterdam_weekdays_spatial <- amsterdam_weekdays[,c(2,13:20)]
-amsterdam_weekends_spatial <- amsterdam_weekends[,c(2,13:20)]
-athens_weekdays_spatial <- athens_weekdays[,c(2,13:20)]
-athens_weekends_spatial <- athens_weekends[,c(2,13:20)]
-barcelona_weekdays_spatial <- barcelona_weekdays[,c(2,13:20)]
-barcelona_weekends_spatial <- barcelona_weekends[,c(2,13:20)]
-berlin_weekdays_spatial <- berlin_weekdays[,c(2,13:20)]
-berlin_weekends_spatial <- berlin_weekends[,c(2,13:20)]
-budapest_weekdays_spatial <- budapest_weekdays[,c(2,13:20)]
-budapest_weekends_spatial <- budapest_weekends[,c(2,13:20)]
-lisbon_weekdays_spatial <- lisbon_weekdays[,c(2,13:20)]
-lisbon_weekends_spatial <- lisbon_weekends[,c(2,13:20)]
-london_weekdays_spatial <- london_weekdays[,c(2,13:20)]
-london_weekends_spatial <- london_weekends[,c(2,13:20)]
-paris_weekdays_spatial <- paris_weekdays[,c(2,13:20)]
-paris_weekends_spatial <- paris_weekends[,c(2,13:20)]
-rome_weekdays_spatial <- rome_weekdays[,c(2,13:20)]
-rome_weekends_spatial <- rome_weekends[,c(2,13:20)]
-vienna_weekdays_spatial <- vienna_weekdays[,c(2,13:20)]
-vienna_weekends_spatial <- vienna_weekends[,c(2,13:20)]
+amsterdam_spatial <- amsterdam[,c(3,14:21)]
+athens_spatial <- athens[,c(3,14:21)]
+barcelona_spatial <- barcelona[,c(3,14:21)]
+berlin_spatial <- berlin[,c(3,14:21)]
+budapest_spatial <- budapest[,c(3,14:21)]
+lisbon_spatial <- lisbon[,c(3,14:21)]
+london_spatial <- london[,c(3,14:21)]
+paris_spatial <- paris[,c(3,14:21)]
+rome_spatial <- rome[,c(3,14:21)]
+vienna_spatial <- vienna[,c(3,14:21)]
+summary(amsterdam_spatial)
 ```
 
 ```{r}
-k <- kmeans(amsterdam_weekdays_spatial, centers = 4, nstart = 25)
-fviz_cluster(k, data = amsterdam_weekdays_spatial)
+k <- kmeans(amsterdam_spatial, centers = 4, nstart = 25)
+fviz_cluster(k, data = amsterdam_spatial)
 ```
 ```{r}
 # function to compute average silhouette for k clusters
 avg_sil <- function(k) {
-  km.res <- kmeans(amsterdam_weekdays_spatial, centers = k, nstart = 25)
-  ss <- silhouette(km.res$cluster, dist(amsterdam_weekdays_spatial))
+  km.res <- kmeans(amsterdam_spatial, centers = k, nstart = 25)
+  ss <- silhouette(km.res$cluster, dist(amsterdam_spatial))
   mean(ss[, 3])
 }
 
@@ -83,13 +84,35 @@ plot(k.values, avg_sil_values,
 ```
 
 ```{r}
-fviz_nbclust(amsterdam_weekdays_spatial, kmeans, method = "silhouette")
+fviz_nbclust(amsterdam_spatial, kmeans, method = "silhouette")
+fviz_nbclust(athens_spatial, kmeans, method = "silhouette")
+fviz_nbclust(barcelona_spatial, kmeans, method = "silhouette")
+fviz_nbclust(berlin_spatial, kmeans, method = "silhouette")
+fviz_nbclust(budapest_spatial, kmeans, method = "silhouette")
+fviz_nbclust(lisbon_spatial, kmeans, method = "silhouette")
+fviz_nbclust(london_spatial, kmeans, method = "silhouette")
+fviz_nbclust(paris_spatial, kmeans, method = "silhouette")
+fviz_nbclust(rome_spatial, kmeans, method = "silhouette")
+fviz_nbclust(vienna_spatial, kmeans, method = "silhouette")
 ```
 
 ```{r}
 
-final_amsterdam_weekdays <- kmeans(amsterdam_weekdays_spatial, 4, nstart = 25)
-final_amsterdam_weekends <- kmeans(amsterdam_weekends_spatial, 4, nstart = 25)
+final_amsterdam <- kmeans(amsterdam_spatial, 4, nstart = 25)
+final_amsterdam$cluster <- factor(final_amsterdam$cluster)
+final_athens <- kmeans(athens_spatial, 2, nstart = 25)
+final_athens$cluster <- factor(final_athens$cluster)
+final_barcelona <- kmeans(barcelona_spatial, 3, nstart = 25)
+final_barcelona$cluster <- factor(final_barcelona$cluster)
+final_berlin <- kmeans(berlin_spatial, 2, nstart = 25)
+final_berlin$cluster <- factor(final_berlin$cluster)
+```
+
+```{r}
+amsterdam_spatial %>%
+  mutate(Cluster = final_amsterdam$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
 ```
 
 ```{r}
@@ -97,38 +120,86 @@ library(shiny)
 library(plotly)
 library(ggplot2)
 
-fig <- amsterdam_weekdays_spatial
+fig <- amsterdam_spatial
 fig <- fig %>%
   plot_ly(
     lat = ~lat,
     lon = ~lng,
-    colors = c("#ff595e", "#ffca3a", "#8ac926", "#1982c4"), 
-    marker = list(color = ~final_amsterdam_weekdays$cluster),
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"), 
+    color = ~final_amsterdam$cluster,
     type = 'scattermapbox',
-    hovertext = ~paste(realSum, "Price")) 
+    hovertext = ~paste(realSum, "Price"),
+    legendgroup = ~final_amsterdam$cluster, 
+    showlegend = T)
 fig <- fig %>%
   layout(
     mapbox = list(
       style = 'open-street-map',
-      zoom =2.5,
-      center = list(lon = 9, lat = 53))) 
+      zoom =3,
+      center = list(lon = 12, lat = 45))) 
 
-fig2 <- amsterdam_weekends_spatial
+fig2 <- athens_spatial
 fig2 <- fig2 %>%
   plot_ly(
     lat = ~lat,
     lon = ~lng,
-    colors = c("#ff595e", "#ffca3a", "#8ac926", "#1982c4"), 
-    marker = list(color = ~final_amsterdam_weekends$cluster),
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    color = ~final_athens$cluster,
     type = 'scattermapbox',
-    hovertext = ~paste(realSum, "Price")) 
+    hovertext = ~paste(realSum, "Price") ,
+    legendgroup = ~final_athens$cluster, 
+    showlegend = F)
 fig2 <- fig2 %>%
   layout(
     mapbox = list(
       style = 'open-street-map',
-      zoom =2.5,
-      center = list(lon = 9, lat = 53))) 
+      zoom =3,
+      center = list(lon = 12, lat = 45))) 
+
+fig3 <- barcelona_spatial
+fig3 <- fig3 %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4"),
+    color = ~final_barcelona$cluster,
+    type = 'scattermapbox',
+    hovertext = ~paste(realSum, "Price") ,
+    legendgroup = ~final_barcelona$cluster, 
+    showlegend = F)
+fig3 <- fig3 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =3,
+      center = list(lon = 12, lat = 45))) 
+
+fig4 <- berlin_spatial
+fig4 <- fig4 %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    color = ~final_berlin$cluster,
+    type = 'scattermapbox',
+    hovertext = ~paste(realSum, "Price") ,
+    legendgroup = ~final_berlin$cluster, 
+    showlegend = F)
+fig4 <- fig4 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =3,
+      center = list(lon = 12, lat = 45))) 
+
+#fig <- fig %>%
+#  add_trace(fig2) # adds the line trace to the first figure
+
+fig <- subplot(fig, fig2, fig3, fig4)
 
 fig
-fig2
 ```
