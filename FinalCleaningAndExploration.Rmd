@@ -48,7 +48,15 @@ library(factoextra)
 set.seed(2003)
 amsterdam_spatial <- amsterdam[,c(3,14:21)]
 athens_spatial <- athens[,c(3,14:21)]
+
 barcelona_spatial <- barcelona[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_barcelona <- quantile(barcelona_spatial$realSum, .25)
+Q3_barcelona <- quantile(barcelona_spatial$realSum, .75)
+IQR_barcelona <- IQR(barcelona_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+barcelona_spatial_no_outliers <- subset(barcelona_spatial, barcelona_spatial$realSum> (Q1_barcelona - 1.5*IQR_barcelona) & barcelona_spatial$realSum< (Q3_barcelona + 1.5*IQR_barcelona))
+
 berlin_spatial <- berlin[,c(3,14:21)]
 budapest_spatial <- budapest[,c(3,14:21)]
 lisbon_spatial <- lisbon[,c(3,14:21)]
@@ -56,12 +64,13 @@ london_spatial <- london[,c(3,14:21)]
 paris_spatial <- paris[,c(3,14:21)]
 rome_spatial <- rome[,c(3,14:21)]
 vienna_spatial <- vienna[,c(3,14:21)]
-summary(amsterdam_spatial)
+summary(barcelona_spatial)
+summary(barcelona_spatial_no_outliers)
 ```
 
 ```{r}
-k <- kmeans(amsterdam_spatial, centers = 3, nstart = 25)
-fviz_cluster(k, data = amsterdam_spatial)
+k <- kmeans(barcelona_spatial_no_outliers, centers = 3, nstart = 25)
+fviz_cluster(k, data = barcelona_spatial_no_outliers)
 ```
 ```{r}
 # function to compute average silhouette for k clusters
@@ -86,7 +95,7 @@ plot(k.values, avg_sil_values,
 ```{r}
 fviz_nbclust(amsterdam_spatial, kmeans, method = "silhouette")
 fviz_nbclust(athens_spatial, kmeans, method = "silhouette")
-fviz_nbclust(barcelona_spatial, kmeans, method = "silhouette")
+fviz_nbclust(barcelona_spatial_no_outliers, kmeans, method = "silhouette")
 fviz_nbclust(berlin_spatial, kmeans, method = "silhouette")
 fviz_nbclust(budapest_spatial, kmeans, method = "silhouette")
 fviz_nbclust(lisbon_spatial, kmeans, method = "silhouette")
@@ -102,7 +111,7 @@ final_amsterdam <- kmeans(amsterdam_spatial, 4, nstart = 25)
 final_amsterdam$cluster <- factor(final_amsterdam$cluster)
 final_athens <- kmeans(athens_spatial, 2, nstart = 25)
 final_athens$cluster <- factor(final_athens$cluster)
-final_barcelona <- kmeans(barcelona_spatial, 3, nstart = 25)
+final_barcelona <- kmeans(barcelona_spatial_no_outliers, 3, nstart = 25)
 final_barcelona$cluster <- factor(final_barcelona$cluster)
 final_berlin <- kmeans(berlin_spatial, 2, nstart = 25)
 final_berlin$cluster <- factor(final_berlin$cluster)
@@ -119,7 +128,7 @@ athens_spatial_clusters <- athens_spatial %>%
   group_by(Cluster) %>%
   summarise_all("median")
 
-barcelona_spatial_clusters <- barcelona_spatial %>%
+barcelona_spatial_clusters <- barcelona_spatial_no_outliers %>%
   mutate(Cluster = final_barcelona$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
@@ -183,7 +192,7 @@ fig2 <- fig2 %>%
       zoom =3,
       center = list(lon = 12, lat = 45))) 
 
-fig3 <- barcelona_spatial
+fig3 <- barcelona_spatial_no_outliers
 fig3 <- fig3 %>%
   plot_ly(
     lat = ~lat,
