@@ -39,7 +39,7 @@ rome <- bind_rows(rome_weekdays, rome_weekends, .id = 'set')
 vienna_weekdays <- read.csv("vienna_weekdays.csv")
 vienna_weekends <- read.csv("vienna_weekends.csv")
 vienna <- bind_rows(vienna_weekdays, vienna_weekends, .id = 'set')
-summary(amsterdam)
+summary(barcelona)
 ```
 
 ```{r}
@@ -60,7 +60,7 @@ summary(amsterdam_spatial)
 ```
 
 ```{r}
-k <- kmeans(amsterdam_spatial, centers = 4, nstart = 25)
+k <- kmeans(amsterdam_spatial, centers = 3, nstart = 25)
 fviz_cluster(k, data = amsterdam_spatial)
 ```
 ```{r}
@@ -109,10 +109,35 @@ final_berlin$cluster <- factor(final_berlin$cluster)
 ```
 
 ```{r}
-amsterdam_spatial %>%
+amsterdam_spatial_clusters <- amsterdam_spatial %>%
   mutate(Cluster = final_amsterdam$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
+
+athens_spatial_clusters <- athens_spatial %>%
+  mutate(Cluster = final_athens$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
+
+barcelona_spatial_clusters <- barcelona_spatial %>%
+  mutate(Cluster = final_barcelona$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
+barcelona_spatial_clusters
+```
+
+```{r}
+library(GGally)
+library(plotly)
+
+p <- ggparcoord(data = amsterdam_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p)
+
+p2 <- ggparcoord(data = athens_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p2)
+
+p3 <- ggparcoord(data = barcelona_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p3)
 ```
 
 ```{r}
@@ -129,7 +154,7 @@ fig <- fig %>%
     colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"), 
     color = ~final_amsterdam$cluster,
     type = 'scattermapbox',
-    hovertext = ~paste(realSum, "Price"),
+    hovertext = ~paste("Price: ", realSum) ,
     legendgroup = ~final_amsterdam$cluster, 
     showlegend = T)
 fig <- fig %>%
@@ -148,7 +173,7 @@ fig2 <- fig2 %>%
     colors = c("1"="#ff595e", "2"="#ffca3a"),
     color = ~final_athens$cluster,
     type = 'scattermapbox',
-    hovertext = ~paste(realSum, "Price") ,
+    hovertext = ~paste("Price: ", realSum) ,
     legendgroup = ~final_athens$cluster, 
     showlegend = F)
 fig2 <- fig2 %>%
@@ -164,10 +189,10 @@ fig3 <- fig3 %>%
     lat = ~lat,
     lon = ~lng,
     mode = "markers",
-    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4"),
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
     color = ~final_barcelona$cluster,
     type = 'scattermapbox',
-    hovertext = ~paste(realSum, "Price") ,
+    hovertext = ~paste("Price: ", realSum) ,
     legendgroup = ~final_barcelona$cluster, 
     showlegend = F)
 fig3 <- fig3 %>%
@@ -186,7 +211,7 @@ fig4 <- fig4 %>%
     colors = c("1"="#ff595e", "2"="#ffca3a"),
     color = ~final_berlin$cluster,
     type = 'scattermapbox',
-    hovertext = ~paste(realSum, "Price") ,
+    hovertext = ~paste("Price: ", realSum) ,
     legendgroup = ~final_berlin$cluster, 
     showlegend = F)
 fig4 <- fig4 %>%
