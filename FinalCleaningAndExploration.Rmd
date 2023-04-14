@@ -46,8 +46,22 @@ summary(barcelona)
 library(cluster)    # clustering algorithms
 library(factoextra)
 set.seed(2003)
+
 amsterdam_spatial <- amsterdam[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_amsterdam <- quantile(amsterdam_spatial$realSum, .25)
+Q3_amsterdam <- quantile(amsterdam_spatial$realSum, .75)
+IQR_amsterdam <- IQR(amsterdam_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+amsterdam_spatial_no_outliers <- subset(amsterdam_spatial, amsterdam_spatial$realSum> (Q1_amsterdam - 1.5*IQR_amsterdam) & amsterdam_spatial$realSum< (Q3_amsterdam + 1.5*IQR_amsterdam))
+
 athens_spatial <- athens[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_athens <- quantile(athens_spatial$realSum, .25)
+Q3_athens <- quantile(athens_spatial$realSum, .75)
+IQR_athens <- IQR(athens_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+athens_spatial_no_outliers <- subset(athens_spatial, athens_spatial$realSum> (Q1_athens - 1.5*IQR_athens) & athens_spatial$realSum< (Q3_athens + 1.5*IQR_athens))
 
 barcelona_spatial <- barcelona[,c(3,14:21)]
 #find Q1, Q3, and interquartile range for values in column A
@@ -58,12 +72,61 @@ IQR_barcelona <- IQR(barcelona_spatial$realSum)
 barcelona_spatial_no_outliers <- subset(barcelona_spatial, barcelona_spatial$realSum> (Q1_barcelona - 1.5*IQR_barcelona) & barcelona_spatial$realSum< (Q3_barcelona + 1.5*IQR_barcelona))
 
 berlin_spatial <- berlin[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_berlin <- quantile(berlin_spatial$realSum, .25)
+Q3_berlin <- quantile(berlin_spatial$realSum, .75)
+IQR_berlin <- IQR(berlin_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+berlin_spatial_no_outliers <- subset(berlin_spatial, berlin_spatial$realSum> (Q1_berlin - 1.5*IQR_berlin) & berlin_spatial$realSum< (Q3_berlin + 1.5*IQR_berlin))
+
 budapest_spatial <- budapest[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_budapest <- quantile(budapest_spatial$realSum, .25)
+Q3_budapest <- quantile(budapest_spatial$realSum, .75)
+IQR_budapest <- IQR(budapest_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+budapest_spatial_no_outliers <- subset(budapest_spatial, budapest_spatial$realSum> (Q1_budapest - 1.5*IQR_budapest) & budapest_spatial$realSum< (Q3_budapest + 1.5*IQR_budapest))
+
 lisbon_spatial <- lisbon[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_lisbon <- quantile(lisbon_spatial$realSum, .25)
+Q3_lisbon <- quantile(lisbon_spatial$realSum, .75)
+IQR_lisbon <- IQR(lisbon_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+lisbon_spatial_no_outliers <- subset(lisbon_spatial, lisbon_spatial$realSum> (Q1_lisbon - 1.5*IQR_lisbon) & lisbon_spatial$realSum< (Q3_lisbon + 1.5*IQR_lisbon))
+
 london_spatial <- london[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_london <- quantile(london_spatial$realSum, .25)
+Q3_london <- quantile(london_spatial$realSum, .75)
+IQR_london <- IQR(london_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+london_spatial_no_outliers <- subset(london_spatial, london_spatial$realSum> (Q1_london - 1.5*IQR_london) & london_spatial$realSum< (Q3_london + 1.5*IQR_london))
+
 paris_spatial <- paris[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_paris <- quantile(paris_spatial$realSum, .25)
+Q3_paris <- quantile(paris_spatial$realSum, .75)
+IQR_paris <- IQR(paris_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+paris_spatial_no_outliers <- subset(paris_spatial, paris_spatial$realSum> (Q1_paris - 1.5*IQR_paris) & paris_spatial$realSum< (Q3_paris + 1.5*IQR_paris))
+
 rome_spatial <- rome[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_rome <- quantile(rome_spatial$realSum, .25)
+Q3_rome <- quantile(rome_spatial$realSum, .75)
+IQR_rome <- IQR(rome_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+rome_spatial_no_outliers <- subset(rome_spatial, rome_spatial$realSum> (Q1_rome - 1.5*IQR_rome) & rome_spatial$realSum< (Q3_rome + 1.5*IQR_rome))
+
 vienna_spatial <- vienna[,c(3,14:21)]
+#find Q1, Q3, and interquartile range for values in column A
+Q1_vienna <- quantile(vienna_spatial$realSum, .25)
+Q3_vienna <- quantile(vienna_spatial$realSum, .75)
+IQR_vienna <- IQR(vienna_spatial$realSum)
+#only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
+vienna_spatial_no_outliers <- subset(vienna_spatial, vienna_spatial$realSum> (Q1_vienna - 1.5*IQR_vienna) & vienna_spatial$realSum< (Q3_vienna + 1.5*IQR_vienna))
+
 summary(barcelona_spatial)
 summary(barcelona_spatial_no_outliers)
 ```
@@ -93,37 +156,49 @@ plot(k.values, avg_sil_values,
 ```
 
 ```{r}
-fviz_nbclust(amsterdam_spatial, kmeans, method = "silhouette")
-fviz_nbclust(athens_spatial, kmeans, method = "silhouette")
+fviz_nbclust(amsterdam_spatial_no_outliers, kmeans, method = "silhouette")
+fviz_nbclust(athens_spatial_no_outliers, kmeans, method = "silhouette")
 fviz_nbclust(barcelona_spatial_no_outliers, kmeans, method = "silhouette")
-fviz_nbclust(berlin_spatial, kmeans, method = "silhouette")
-fviz_nbclust(budapest_spatial, kmeans, method = "silhouette")
-fviz_nbclust(lisbon_spatial, kmeans, method = "silhouette")
-fviz_nbclust(london_spatial, kmeans, method = "silhouette")
-fviz_nbclust(paris_spatial, kmeans, method = "silhouette")
-fviz_nbclust(rome_spatial, kmeans, method = "silhouette")
-fviz_nbclust(vienna_spatial, kmeans, method = "silhouette")
+fviz_nbclust(berlin_spatial_no_outliers, kmeans, method = "silhouette")
+fviz_nbclust(budapest_spatial_no_outliers, kmeans, method = "silhouette")
+fviz_nbclust(lisbon_spatial_no_outliers, kmeans, method = "silhouette")
+fviz_nbclust(london_spatial_no_outliers, kmeans, method = "silhouette")
+fviz_nbclust(paris_spatial_no_outliers, kmeans, method = "silhouette")
+fviz_nbclust(rome_spatial_no_outliers, kmeans, method = "silhouette")
+fviz_nbclust(vienna_spatial_no_outliers, kmeans, method = "silhouette")
 ```
 
 ```{r}
 
-final_amsterdam <- kmeans(amsterdam_spatial, 4, nstart = 25)
+final_amsterdam <- kmeans(amsterdam_spatial_no_outliers, 3, nstart = 25)
 final_amsterdam$cluster <- factor(final_amsterdam$cluster)
-final_athens <- kmeans(athens_spatial, 2, nstart = 25)
+final_athens <- kmeans(athens_spatial_no_outliers, 2, nstart = 25)
 final_athens$cluster <- factor(final_athens$cluster)
 final_barcelona <- kmeans(barcelona_spatial_no_outliers, 3, nstart = 25)
 final_barcelona$cluster <- factor(final_barcelona$cluster)
-final_berlin <- kmeans(berlin_spatial, 2, nstart = 25)
+final_berlin <- kmeans(berlin_spatial_no_outliers, 2, nstart = 25)
 final_berlin$cluster <- factor(final_berlin$cluster)
+final_budapest <- kmeans(budapest_spatial_no_outliers, 2, nstart = 25)
+final_budapest$cluster <- factor(final_budapest$cluster)
+final_lisbon <- kmeans(lisbon_spatial_no_outliers, 2, nstart = 25)
+final_lisbon$cluster <- factor(final_lisbon$cluster)
+final_london <- kmeans(london_spatial_no_outliers, 2, nstart = 25)
+final_london$cluster <- factor(final_london$cluster)
+final_paris <- kmeans(paris_spatial_no_outliers, 2, nstart = 25)
+final_paris$cluster <- factor(final_paris$cluster)
+final_rome <- kmeans(rome_spatial_no_outliers, 2, nstart = 25)
+final_rome$cluster <- factor(final_rome$cluster)
+final_vienna <- kmeans(vienna_spatial_no_outliers, 2, nstart = 25)
+final_vienna$cluster <- factor(final_vienna$cluster)
 ```
 
 ```{r}
-amsterdam_spatial_clusters <- amsterdam_spatial %>%
+amsterdam_spatial_clusters <- amsterdam_spatial_no_outliers %>%
   mutate(Cluster = final_amsterdam$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
 
-athens_spatial_clusters <- athens_spatial %>%
+athens_spatial_clusters <- athens_spatial_no_outliers %>%
   mutate(Cluster = final_athens$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
@@ -132,7 +207,41 @@ barcelona_spatial_clusters <- barcelona_spatial_no_outliers %>%
   mutate(Cluster = final_barcelona$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-barcelona_spatial_clusters
+
+berlin_spatial_clusters <- berlin_spatial_no_outliers %>%
+  mutate(Cluster = final_berlin$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
+
+budapest_spatial_clusters <- budapest_spatial_no_outliers %>%
+  mutate(Cluster = final_budapest$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
+
+lisbon_spatial_clusters <- lisbon_spatial_no_outliers %>%
+  mutate(Cluster = final_lisbon$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
+
+london_spatial_clusters <- london_spatial_no_outliers %>%
+  mutate(Cluster = final_london$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
+
+paris_spatial_clusters <- paris_spatial_no_outliers %>%
+  mutate(Cluster = final_paris$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
+
+rome_spatial_clusters <- rome_spatial_no_outliers %>%
+  mutate(Cluster = final_rome$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
+
+vienna_spatial_clusters <- vienna_spatial_no_outliers %>%
+  mutate(Cluster = final_vienna$cluster) %>%
+  group_by(Cluster) %>%
+  summarise_all("median")
 ```
 
 ```{r}
@@ -147,6 +256,27 @@ ggplotly(p2)
 
 p3 <- ggparcoord(data = barcelona_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
 ggplotly(p3)
+
+p4 <- ggparcoord(data = berlin_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p4)
+
+p5 <- ggparcoord(data = budapest_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p5)
+
+p6 <- ggparcoord(data = lisbon_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p6)
+
+p7 <- ggparcoord(data = london_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p7)
+
+p8 <- ggparcoord(data = paris_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p8)
+
+p9 <- ggparcoord(data = rome_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p9)
+
+p10 <- ggparcoord(data = vienna_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+ggplotly(p10)
 ```
 
 ```{r}
@@ -154,7 +284,7 @@ library(shiny)
 library(plotly)
 library(ggplot2)
 
-fig <- amsterdam_spatial
+fig <- amsterdam_spatial_no_outliers
 fig <- fig %>%
   plot_ly(
     lat = ~lat,
@@ -173,7 +303,7 @@ fig <- fig %>%
       zoom =3,
       center = list(lon = 12, lat = 45))) 
 
-fig2 <- athens_spatial
+fig2 <- athens_spatial_no_outliers
 fig2 <- fig2 %>%
   plot_ly(
     lat = ~lat,
@@ -211,7 +341,7 @@ fig3 <- fig3 %>%
       zoom =3,
       center = list(lon = 12, lat = 45))) 
 
-fig4 <- berlin_spatial
+fig4 <- berlin_spatial_no_outliers
 fig4 <- fig4 %>%
   plot_ly(
     lat = ~lat,
@@ -228,12 +358,126 @@ fig4 <- fig4 %>%
     mapbox = list(
       style = 'open-street-map',
       zoom =3,
+      center = list(lon = 12, lat = 45)))
+
+fig5 <- budapest_spatial_no_outliers
+fig5 <- fig5 %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    color = ~final_budapest$cluster,
+    type = 'scattermapbox',
+    hovertext = ~paste("Price: ", realSum) ,
+    legendgroup = ~final_budapest$cluster, 
+    showlegend = F)
+fig5 <- fig5 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =3,
+      center = list(lon = 12, lat = 45)))
+
+fig6 <- lisbon_spatial_no_outliers
+fig6 <- fig6 %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    color = ~final_lisbon$cluster,
+    type = 'scattermapbox',
+    hovertext = ~paste("Price: ", realSum) ,
+    legendgroup = ~final_lisbon$cluster, 
+    showlegend = F)
+fig6 <- fig6 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =3,
+      center = list(lon = 12, lat = 45)))
+
+fig7 <- london_spatial_no_outliers
+fig7 <- fig7 %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    color = ~final_london$cluster,
+    type = 'scattermapbox',
+    hovertext = ~paste("Price: ", realSum) ,
+    legendgroup = ~final_london$cluster, 
+    showlegend = F)
+fig7 <- fig7 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =3,
+      center = list(lon = 12, lat = 45)))
+
+fig8 <- paris_spatial_no_outliers
+fig8 <- fig8 %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    color = ~final_paris$cluster,
+    type = 'scattermapbox',
+    hovertext = ~paste("Price: ", realSum) ,
+    legendgroup = ~final_paris$cluster, 
+    showlegend = F)
+fig8 <- fig8 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =3,
+      center = list(lon = 12, lat = 45)))
+
+fig9 <- rome_spatial_no_outliers
+fig9 <- fig9 %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    color = ~final_rome$cluster,
+    type = 'scattermapbox',
+    hovertext = ~paste("Price: ", realSum) ,
+    legendgroup = ~final_rome$cluster, 
+    showlegend = F)
+fig9 <- fig9 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =3,
+      center = list(lon = 12, lat = 45)))
+
+fig10 <- vienna_spatial_no_outliers
+fig10 <- fig10 %>%
+  plot_ly(
+    lat = ~lat,
+    lon = ~lng,
+    mode = "markers",
+    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    color = ~final_vienna$cluster,
+    type = 'scattermapbox',
+    hovertext = ~paste("Price: ", realSum) ,
+    legendgroup = ~final_vienna$cluster, 
+    showlegend = F)
+fig10 <- fig10 %>%
+  layout(
+    mapbox = list(
+      style = 'open-street-map',
+      zoom =3,
       center = list(lon = 12, lat = 45))) 
 
 #fig <- fig %>%
 #  add_trace(fig2) # adds the line trace to the first figure
 
-fig <- subplot(fig, fig2, fig3, fig4)
+fig <- subplot(fig, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10)
 
 fig
 ```
