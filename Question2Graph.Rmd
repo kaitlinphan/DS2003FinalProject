@@ -1,0 +1,221 @@
+---
+title: "Question 2 Graph"
+output: html_document
+date: "2023-04-12"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(shiny)
+library(plotly)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+# Add weekday/weekend label to dataframes
+amsterdam_weekdays <- read.csv("amsterdam_weekdays.csv")
+amsterdam_weekdays <- amsterdam_weekdays %>%
+  add_column(dayofweek = "weekday")
+amsterdam_weekends <- read.csv("amsterdam_weekends.csv")
+amsterdam_weekends <- amsterdam_weekends %>%
+  add_column(dayofweek = "weekend")
+
+athens_weekdays <- read.csv("athens_weekdays.csv")
+athens_weekdays <- athens_weekdays %>%
+  add_column(dayofweek = "weekday")
+athens_weekends <- read.csv("athens_weekends.csv")
+athens_weekends <- athens_weekends %>%
+  add_column(dayofweek = "weekend")
+
+barcelona_weekdays <- read.csv("barcelona_weekdays.csv")
+barcelona_weekdays <- barcelona_weekdays %>%
+  add_column(dayofweek = "weekday")
+barcelona_weekends <- read.csv("barcelona_weekends.csv")
+barcelona_weekends <- barcelona_weekends %>%
+  add_column(dayofweek = "weekend")
+
+berlin_weekdays <- read.csv("berlin_weekdays.csv")
+berlin_weekdays <- berlin_weekdays %>%
+  add_column(dayofweek = "weekday")
+berlin_weekends <- read.csv("berlin_weekends.csv")
+berlin_weekends <- berlin_weekends %>%
+  add_column(dayofweek = "weekend")
+
+budapest_weekdays <- read.csv("budapest_weekdays.csv")
+budapest_weekdays <- budapest_weekdays %>%
+  add_column(dayofweek = "weekday")
+budapest_weekends <- read.csv("budapest_weekends.csv")
+budapest_weekends <- budapest_weekends %>%
+  add_column(dayofweek = "weekend")
+
+lisbon_weekdays <- read.csv("lisbon_weekdays.csv")
+lisbon_weekdays <- lisbon_weekdays %>%
+  add_column(dayofweek = "weekday")
+lisbon_weekends <- read.csv("lisbon_weekends.csv")
+lisbon_weekends <- lisbon_weekends %>%
+  add_column(dayofweek = "weekend")
+
+london_weekdays <- read.csv("london_weekdays.csv")
+london_weekdays <- london_weekdays %>%
+  add_column(dayofweek = "weekday")
+london_weekends <- read.csv("london_weekends.csv")
+london_weekends <- london_weekends %>%
+  add_column(dayofweek = "weekend")
+
+paris_weekdays <- read.csv("paris_weekdays.csv")
+paris_weekdays <- paris_weekdays %>%
+  add_column(dayofweek = "weekday")
+paris_weekends <- read.csv("paris_weekends.csv")
+paris_weekends <-  paris_weekends %>%
+  add_column(dayofweek = "weekend")
+
+rome_weekdays <- read.csv("rome_weekdays.csv")
+rome_weekdays <- rome_weekdays %>%
+  add_column(dayofweek = "weekday")
+rome_weekends <- read.csv("rome_weekends.csv")
+rome_weekends <-  rome_weekends %>%
+  add_column(dayofweek = "weekend")
+
+vienna_weekdays <- read.csv("vienna_weekdays.csv")
+vienna_weekdays <- vienna_weekdays %>%
+  add_column(dayofweek = "weekday")
+vienna_weekends <- read.csv("vienna_weekends.csv")
+vienna_weekends <-  vienna_weekends %>%
+  add_column(dayofweek = "weekend")
+
+# Combine datasets
+amsterdam <- bind_rows(amsterdam_weekdays, amsterdam_weekends)
+athens <- bind_rows(athens_weekdays, athens_weekends)
+barcelona <- bind_rows(barcelona_weekdays, barcelona_weekends)
+berlin <- bind_rows(berlin_weekdays, berlin_weekends)
+budapest <- bind_rows(budapest_weekdays, budapest_weekends)
+lisbon <- bind_rows(lisbon_weekdays, lisbon_weekends)
+london <- bind_rows(london_weekdays, london_weekends)
+paris <- bind_rows(paris_weekdays, paris_weekends)
+rome <- bind_rows(rome_weekdays, rome_weekends)
+vienna <- bind_rows(vienna_weekdays, vienna_weekends)
+
+# Add city names to the dataframes
+amsterdam <- amsterdam %>%
+  add_column(city = "amsterdam")
+athens <- athens %>%
+  add_column(city = "athens")
+barcelona <- barcelona %>%
+  add_column(city = "barcelona")
+berlin <- berlin %>%
+  add_column(city = "berlin")
+budapest <- budapest %>%
+  add_column(city = "budapest")
+lisbon <- lisbon %>%
+  add_column(city = "lisbon")
+london <- london %>%
+  add_column(city = "london")
+paris <- paris %>%
+  add_column(city = "paris")
+rome <- rome %>%
+  add_column(city = "rome")
+vienna <- vienna %>%
+  add_column(city = "vienna")
+```
+
+Base shiny plot that has ONLY a dropdown menu for cities
+```{r}
+fig_city <- bind_rows(amsterdam, athens, barcelona, berlin, budapest, lisbon, london, paris, rome, vienna)
+
+ui <- fluidPage(
+  titlePanel("TITLE"),
+  sidebarLayout(  
+    sidebarPanel(
+      #option for selecting teams
+      selectInput(
+        "city", "City:",
+        choices= unique(fig_city$city)
+      ),
+    ),
+    mainPanel(
+      plotOutput(outputId = "scatterplot")
+    )))
+
+server <- function(input, output) {
+  output$scatterplot <- renderPlot({
+    ggplot(fig_city[fig_city$city==input$city,], aes(x=attr_index_norm, y=realSum, color=room_type, size=person_capacity), input$day_type == day_type) + 
+      geom_point(alpha=0.7) + xlab("X") + ylab("Y") + 
+      ggtitle("TITLE") + 
+      theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1)) +
+      ylim(0, 2000) +
+      theme_classic()
+  })
+}
+
+shinyApp(ui = ui, server = server)
+```
+
+Dropdown box for city, slider for price, checkbox weekend/weekday, radio button for biz, checkbox for color
+```{r}
+ui <- fluidPage(
+  titlePanel("TITLE"),
+   sidebarLayout(
+    sidebarPanel(
+      # Dropdown box for city
+    selectInput("city", label = "City:",
+              choices= unique(fig_city$city)),
+      # Slider range for price
+    sliderInput("realSum", label = "Price of Rental", min = 0, 
+        max = 5000, value = c(0, 5000)),
+      # Checkbox for day of the week
+    checkboxGroupInput("dayofweek", label = "Weekday vs. Weekend Rental", 
+    choices= unique(fig_city$dayofweek), selected = c("weekday", "weekend")),
+      # Radio button for business vs. vacation rentals
+    radioButtons("biz", label = "Business vs. Vacation Rental",
+    choices = list("Vacation" = 0, "Business" = 1), selected = 1),
+      # Checkbox for room type
+    checkboxGroupInput("room_type", label = "Rental Room Type", 
+    choices= unique(fig_city$room_type), selected = c("Private room", "Entire home/apt", "Shared room"))
+    ),
+  mainPanel(
+     plotOutput("scatterplot")
+    )
+  ))
+
+server <- function(input, output){
+  
+   output$scatterplot <- renderPlot({
+     
+     fig_city <- fig_city %>% filter(dayofweek %in% input$dayofweek)
+     fig_city <- fig_city %>% filter(biz %in% input$biz)
+     fig_city <- fig_city %>% filter(room_type %in% input$room_type)
+     
+     ggplot(fig_city[fig_city$city==input$city,], aes(x=attr_index_norm, y=realSum, color=room_type, size=person_capacity)) + 
+      geom_point(alpha=0.85) + xlab("X") + ylab("Y") + 
+      ggtitle("TITLE") + 
+      theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1)) +
+      ylim(min(input$realSum), max(input$realSum)) +
+      theme_classic() +
+      scale_color_manual(values =  c("Private room"='coral',
+        "Entire home/apt"='lightblue',
+        "Shared room"='lightgreen'
+      )
+    )
+  })
+}
+
+shinyApp(ui = ui, server = server) 
+```
+
+
+consider facet graphs for business and vacation rentals; add dataset information and summary stats
