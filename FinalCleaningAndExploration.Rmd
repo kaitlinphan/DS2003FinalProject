@@ -172,23 +172,23 @@ fviz_nbclust(vienna_spatial_no_outliers, kmeans, method = "silhouette")
 
 final_amsterdam <- kmeans(amsterdam_spatial_no_outliers, 3, nstart = 25)
 final_amsterdam$cluster <- factor(final_amsterdam$cluster)
-final_athens <- kmeans(athens_spatial_no_outliers, 2, nstart = 25)
+final_athens <- kmeans(athens_spatial_no_outliers, 3, nstart = 25)
 final_athens$cluster <- factor(final_athens$cluster)
 final_barcelona <- kmeans(barcelona_spatial_no_outliers, 3, nstart = 25)
 final_barcelona$cluster <- factor(final_barcelona$cluster)
-final_berlin <- kmeans(berlin_spatial_no_outliers, 2, nstart = 25)
+final_berlin <- kmeans(berlin_spatial_no_outliers, 3, nstart = 25)
 final_berlin$cluster <- factor(final_berlin$cluster)
-final_budapest <- kmeans(budapest_spatial_no_outliers, 2, nstart = 25)
+final_budapest <- kmeans(budapest_spatial_no_outliers, 3, nstart = 25)
 final_budapest$cluster <- factor(final_budapest$cluster)
-final_lisbon <- kmeans(lisbon_spatial_no_outliers, 2, nstart = 25)
+final_lisbon <- kmeans(lisbon_spatial_no_outliers, 3, nstart = 25)
 final_lisbon$cluster <- factor(final_lisbon$cluster)
-final_london <- kmeans(london_spatial_no_outliers, 2, nstart = 25)
+final_london <- kmeans(london_spatial_no_outliers, 4, nstart = 25)
 final_london$cluster <- factor(final_london$cluster)
-final_paris <- kmeans(paris_spatial_no_outliers, 2, nstart = 25)
+final_paris <- kmeans(paris_spatial_no_outliers, 3, nstart = 25)
 final_paris$cluster <- factor(final_paris$cluster)
-final_rome <- kmeans(rome_spatial_no_outliers, 2, nstart = 25)
+final_rome <- kmeans(rome_spatial_no_outliers, 3, nstart = 25)
 final_rome$cluster <- factor(final_rome$cluster)
-final_vienna <- kmeans(vienna_spatial_no_outliers, 2, nstart = 25)
+final_vienna <- kmeans(vienna_spatial_no_outliers, 3, nstart = 25)
 final_vienna$cluster <- factor(final_vienna$cluster)
 ```
 
@@ -248,34 +248,44 @@ vienna_spatial_clusters <- vienna_spatial_no_outliers %>%
 library(GGally)
 library(plotly)
 
-p <- ggparcoord(data = amsterdam_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p <- ggparcoord(data = amsterdam_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p)
 
-p2 <- ggparcoord(data = athens_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p2 <- ggparcoord(data = athens_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p2)
 
-p3 <- ggparcoord(data = barcelona_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p3 <- ggparcoord(data = barcelona_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p3)
 
-p4 <- ggparcoord(data = berlin_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p4 <- ggparcoord(data = berlin_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p4)
 
-p5 <- ggparcoord(data = budapest_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p5 <- ggparcoord(data = budapest_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p5)
 
-p6 <- ggparcoord(data = lisbon_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p6 <- ggparcoord(data = lisbon_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p6)
 
-p7 <- ggparcoord(data = london_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p7 <- ggparcoord(data = london_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p7)
 
-p8 <- ggparcoord(data = paris_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p8 <- ggparcoord(data = paris_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p8)
 
-p9 <- ggparcoord(data = rome_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p9 <- ggparcoord(data = rome_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p9)
 
-p10 <- ggparcoord(data = vienna_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering")
+p10 <- ggparcoord(data = vienna_spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+  scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
 ggplotly(p10)
 ```
 
@@ -295,7 +305,7 @@ fig <- fig %>%
     type = 'scattermapbox',
     hovertext = ~paste("Price: ", realSum) ,
     legendgroup = ~final_amsterdam$cluster, 
-    showlegend = T)
+    showlegend = F)
 fig <- fig %>%
   layout(
     mapbox = list(
@@ -309,7 +319,7 @@ fig2 <- fig2 %>%
     lat = ~lat,
     lon = ~lng,
     mode = "markers",
-    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
     color = ~final_athens$cluster,
     type = 'scattermapbox',
     hovertext = ~paste("Price: ", realSum) ,
@@ -347,7 +357,7 @@ fig4 <- fig4 %>%
     lat = ~lat,
     lon = ~lng,
     mode = "markers",
-    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
     color = ~final_berlin$cluster,
     type = 'scattermapbox',
     hovertext = ~paste("Price: ", realSum) ,
@@ -366,7 +376,7 @@ fig5 <- fig5 %>%
     lat = ~lat,
     lon = ~lng,
     mode = "markers",
-    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
     color = ~final_budapest$cluster,
     type = 'scattermapbox',
     hovertext = ~paste("Price: ", realSum) ,
@@ -385,7 +395,7 @@ fig6 <- fig6 %>%
     lat = ~lat,
     lon = ~lng,
     mode = "markers",
-    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
     color = ~final_lisbon$cluster,
     type = 'scattermapbox',
     hovertext = ~paste("Price: ", realSum) ,
@@ -404,12 +414,12 @@ fig7 <- fig7 %>%
     lat = ~lat,
     lon = ~lng,
     mode = "markers",
-    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
     color = ~final_london$cluster,
     type = 'scattermapbox',
     hovertext = ~paste("Price: ", realSum) ,
     legendgroup = ~final_london$cluster, 
-    showlegend = F)
+    showlegend = T)
 fig7 <- fig7 %>%
   layout(
     mapbox = list(
@@ -423,7 +433,7 @@ fig8 <- fig8 %>%
     lat = ~lat,
     lon = ~lng,
     mode = "markers",
-    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
     color = ~final_paris$cluster,
     type = 'scattermapbox',
     hovertext = ~paste("Price: ", realSum) ,
@@ -442,7 +452,7 @@ fig9 <- fig9 %>%
     lat = ~lat,
     lon = ~lng,
     mode = "markers",
-    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
     color = ~final_rome$cluster,
     type = 'scattermapbox',
     hovertext = ~paste("Price: ", realSum) ,
@@ -461,7 +471,7 @@ fig10 <- fig10 %>%
     lat = ~lat,
     lon = ~lng,
     mode = "markers",
-    colors = c("1"="#ff595e", "2"="#ffca3a"),
+    colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
     color = ~final_vienna$cluster,
     type = 'scattermapbox',
     hovertext = ~paste("Price: ", realSum) ,
