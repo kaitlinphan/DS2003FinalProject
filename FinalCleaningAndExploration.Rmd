@@ -9,37 +9,99 @@ library(tidyverse)
 ```
 
 ```{r}
+# Add weekday/weekend label to dataframes
 amsterdam_weekdays <- read.csv("amsterdam_weekdays.csv")
+amsterdam_weekdays <- amsterdam_weekdays %>%
+  add_column(dayofweek = "weekday")
 amsterdam_weekends <- read.csv("amsterdam_weekends.csv")
-amsterdam <- bind_rows(amsterdam_weekdays, amsterdam_weekends, .id = 'set')
+amsterdam_weekends <- amsterdam_weekends %>%
+  add_column(dayofweek = "weekend")
 athens_weekdays <- read.csv("athens_weekdays.csv")
+athens_weekdays <- athens_weekdays %>%
+  add_column(dayofweek = "weekday")
 athens_weekends <- read.csv("athens_weekends.csv")
-athens <- bind_rows(athens_weekdays, athens_weekends, .id = 'set')
+athens_weekends <- athens_weekends %>%
+  add_column(dayofweek = "weekend")
 barcelona_weekdays <- read.csv("barcelona_weekdays.csv")
+barcelona_weekdays <- barcelona_weekdays %>%
+  add_column(dayofweek = "weekday")
 barcelona_weekends <- read.csv("barcelona_weekends.csv")
-barcelona <- bind_rows(barcelona_weekdays, barcelona_weekends, .id = 'set')
+barcelona_weekends <- barcelona_weekends %>%
+  add_column(dayofweek = "weekend")
 berlin_weekdays <- read.csv("berlin_weekdays.csv")
+berlin_weekdays <- berlin_weekdays %>%
+  add_column(dayofweek = "weekday")
 berlin_weekends <- read.csv("berlin_weekends.csv")
-berlin <- bind_rows(berlin_weekdays, berlin_weekends, .id = 'set')
+berlin_weekends <- berlin_weekends %>%
+  add_column(dayofweek = "weekend")
 budapest_weekdays <- read.csv("budapest_weekdays.csv")
+budapest_weekdays <- budapest_weekdays %>%
+  add_column(dayofweek = "weekday")
 budapest_weekends <- read.csv("budapest_weekends.csv")
-budapest <- bind_rows(budapest_weekdays, budapest_weekends, .id = 'set')
+budapest_weekends <- budapest_weekends %>%
+  add_column(dayofweek = "weekend")
 lisbon_weekdays <- read.csv("lisbon_weekdays.csv")
+lisbon_weekdays <- lisbon_weekdays %>%
+  add_column(dayofweek = "weekday")
 lisbon_weekends <- read.csv("lisbon_weekends.csv")
-lisbon <- bind_rows(lisbon_weekdays, lisbon_weekends, .id = 'set')
+lisbon_weekends <- lisbon_weekends %>%
+  add_column(dayofweek = "weekend")
 london_weekdays <- read.csv("london_weekdays.csv")
+london_weekdays <- london_weekdays %>%
+  add_column(dayofweek = "weekday")
 london_weekends <- read.csv("london_weekends.csv")
-london <- bind_rows(london_weekdays, london_weekends, .id = 'set')
+london_weekends <- london_weekends %>%
+  add_column(dayofweek = "weekend")
 paris_weekdays <- read.csv("paris_weekdays.csv")
+paris_weekdays <- paris_weekdays %>%
+  add_column(dayofweek = "weekday")
 paris_weekends <- read.csv("paris_weekends.csv")
-paris <- bind_rows(paris_weekdays, paris_weekends, .id = 'set')
+paris_weekends <-  paris_weekends %>%
+  add_column(dayofweek = "weekend")
 rome_weekdays <- read.csv("rome_weekdays.csv")
+rome_weekdays <- rome_weekdays %>%
+  add_column(dayofweek = "weekday")
 rome_weekends <- read.csv("rome_weekends.csv")
-rome <- bind_rows(rome_weekdays, rome_weekends, .id = 'set')
+rome_weekends <-  rome_weekends %>%
+  add_column(dayofweek = "weekend")
 vienna_weekdays <- read.csv("vienna_weekdays.csv")
+vienna_weekdays <- vienna_weekdays %>%
+  add_column(dayofweek = "weekday")
 vienna_weekends <- read.csv("vienna_weekends.csv")
-vienna <- bind_rows(vienna_weekdays, vienna_weekends, .id = 'set')
-summary(barcelona)
+vienna_weekends <-  vienna_weekends %>%
+  add_column(dayofweek = "weekend")
+# Combine datasets
+amsterdam <- bind_rows(amsterdam_weekdays, amsterdam_weekends)
+athens <- bind_rows(athens_weekdays, athens_weekends)
+barcelona <- bind_rows(barcelona_weekdays, barcelona_weekends)
+berlin <- bind_rows(berlin_weekdays, berlin_weekends)
+budapest <- bind_rows(budapest_weekdays, budapest_weekends)
+lisbon <- bind_rows(lisbon_weekdays, lisbon_weekends)
+london <- bind_rows(london_weekdays, london_weekends)
+paris <- bind_rows(paris_weekdays, paris_weekends)
+rome <- bind_rows(rome_weekdays, rome_weekends)
+vienna <- bind_rows(vienna_weekdays, vienna_weekends)
+# Add city names to the dataframes
+amsterdam <- amsterdam %>%
+  add_column(city = "amsterdam")
+athens <- athens %>%
+  add_column(city = "athens")
+barcelona <- barcelona %>%
+  add_column(city = "barcelona")
+berlin <- berlin %>%
+  add_column(city = "berlin")
+budapest <- budapest %>%
+  add_column(city = "budapest")
+lisbon <- lisbon %>%
+  add_column(city = "lisbon")
+london <- london %>%
+  add_column(city = "london")
+paris <- paris %>%
+  add_column(city = "paris")
+rome <- rome %>%
+  add_column(city = "rome")
+vienna <- vienna %>%
+  add_column(city = "vienna")
 ```
 
 ```{r}
@@ -47,86 +109,86 @@ library(cluster)    # clustering algorithms
 library(factoextra)
 set.seed(2003)
 
-amsterdam_spatial <- amsterdam[,c(3,14:21)]
+amsterdam_spatial <- amsterdam
 #find Q1, Q3, and interquartile range for values in column A
 Q1_amsterdam <- quantile(amsterdam_spatial$realSum, .25)
 Q3_amsterdam <- quantile(amsterdam_spatial$realSum, .75)
 IQR_amsterdam <- IQR(amsterdam_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-amsterdam_spatial_no_outliers <- subset(amsterdam_spatial, amsterdam_spatial$realSum> (Q1_amsterdam - 1.5*IQR_amsterdam) & amsterdam_spatial$realSum< (Q3_amsterdam + 1.5*IQR_amsterdam))
-
-athens_spatial <- athens[,c(3,14:21)]
+amsterdam_no_outliers <- subset(amsterdam_spatial, amsterdam_spatial$realSum> (Q1_amsterdam - 1.5*IQR_amsterdam) & amsterdam_spatial$realSum< (Q3_amsterdam + 1.5*IQR_amsterdam))
+amsterdam_spatial_no_outliers <- amsterdam_no_outliers[,c(2,13:20)]
+athens_spatial <- athens
 #find Q1, Q3, and interquartile range for values in column A
 Q1_athens <- quantile(athens_spatial$realSum, .25)
 Q3_athens <- quantile(athens_spatial$realSum, .75)
 IQR_athens <- IQR(athens_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-athens_spatial_no_outliers <- subset(athens_spatial, athens_spatial$realSum> (Q1_athens - 1.5*IQR_athens) & athens_spatial$realSum< (Q3_athens + 1.5*IQR_athens))
-
-barcelona_spatial <- barcelona[,c(3,14:21)]
+athens_no_outliers <- subset(athens_spatial, athens_spatial$realSum> (Q1_athens - 1.5*IQR_athens) & athens_spatial$realSum< (Q3_athens + 1.5*IQR_athens))
+athens_spatial_no_outliers <- athens_no_outliers[,c(2,13:20)]
+barcelona_spatial <- barcelona
 #find Q1, Q3, and interquartile range for values in column A
 Q1_barcelona <- quantile(barcelona_spatial$realSum, .25)
 Q3_barcelona <- quantile(barcelona_spatial$realSum, .75)
 IQR_barcelona <- IQR(barcelona_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-barcelona_spatial_no_outliers <- subset(barcelona_spatial, barcelona_spatial$realSum> (Q1_barcelona - 1.5*IQR_barcelona) & barcelona_spatial$realSum< (Q3_barcelona + 1.5*IQR_barcelona))
-
-berlin_spatial <- berlin[,c(3,14:21)]
+barcelona_no_outliers <- subset(barcelona_spatial, barcelona_spatial$realSum> (Q1_barcelona - 1.5*IQR_barcelona) & barcelona_spatial$realSum< (Q3_barcelona + 1.5*IQR_barcelona))
+barcelona_spatial_no_outliers <- barcelona_no_outliers[,c(2,13:20)]
+berlin_spatial <- berlin
 #find Q1, Q3, and interquartile range for values in column A
 Q1_berlin <- quantile(berlin_spatial$realSum, .25)
 Q3_berlin <- quantile(berlin_spatial$realSum, .75)
 IQR_berlin <- IQR(berlin_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-berlin_spatial_no_outliers <- subset(berlin_spatial, berlin_spatial$realSum> (Q1_berlin - 1.5*IQR_berlin) & berlin_spatial$realSum< (Q3_berlin + 1.5*IQR_berlin))
-
-budapest_spatial <- budapest[,c(3,14:21)]
+berlin_no_outliers <- subset(berlin_spatial, berlin_spatial$realSum> (Q1_berlin - 1.5*IQR_berlin) & berlin_spatial$realSum< (Q3_berlin + 1.5*IQR_berlin))
+berlin_spatial_no_outliers <- berlin_no_outliers[,c(2,13:20)]
+budapest_spatial <- budapest
 #find Q1, Q3, and interquartile range for values in column A
 Q1_budapest <- quantile(budapest_spatial$realSum, .25)
 Q3_budapest <- quantile(budapest_spatial$realSum, .75)
 IQR_budapest <- IQR(budapest_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-budapest_spatial_no_outliers <- subset(budapest_spatial, budapest_spatial$realSum> (Q1_budapest - 1.5*IQR_budapest) & budapest_spatial$realSum< (Q3_budapest + 1.5*IQR_budapest))
-
-lisbon_spatial <- lisbon[,c(3,14:21)]
+budapest_no_outliers <- subset(budapest_spatial, budapest_spatial$realSum> (Q1_budapest - 1.5*IQR_budapest) & budapest_spatial$realSum< (Q3_budapest + 1.5*IQR_budapest))
+budapest_spatial_no_outliers <- budapest_no_outliers[,c(2,13:20)]
+lisbon_spatial <- lisbon
 #find Q1, Q3, and interquartile range for values in column A
 Q1_lisbon <- quantile(lisbon_spatial$realSum, .25)
 Q3_lisbon <- quantile(lisbon_spatial$realSum, .75)
 IQR_lisbon <- IQR(lisbon_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-lisbon_spatial_no_outliers <- subset(lisbon_spatial, lisbon_spatial$realSum> (Q1_lisbon - 1.5*IQR_lisbon) & lisbon_spatial$realSum< (Q3_lisbon + 1.5*IQR_lisbon))
-
-london_spatial <- london[,c(3,14:21)]
+lisbon_no_outliers <- subset(lisbon_spatial, lisbon_spatial$realSum> (Q1_lisbon - 1.5*IQR_lisbon) & lisbon_spatial$realSum< (Q3_lisbon + 1.5*IQR_lisbon))
+lisbon_spatial_no_outliers <- lisbon_no_outliers[,c(2,13:20)]
+london_spatial <- london
 #find Q1, Q3, and interquartile range for values in column A
 Q1_london <- quantile(london_spatial$realSum, .25)
 Q3_london <- quantile(london_spatial$realSum, .75)
 IQR_london <- IQR(london_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-london_spatial_no_outliers <- subset(london_spatial, london_spatial$realSum> (Q1_london - 1.5*IQR_london) & london_spatial$realSum< (Q3_london + 1.5*IQR_london))
-
-paris_spatial <- paris[,c(3,14:21)]
+london_no_outliers <- subset(london_spatial, london_spatial$realSum> (Q1_london - 1.5*IQR_london) & london_spatial$realSum< (Q3_london + 1.5*IQR_london))
+london_spatial_no_outliers <- london_no_outliers[,c(2,13:20)]
+paris_spatial <- paris
 #find Q1, Q3, and interquartile range for values in column A
 Q1_paris <- quantile(paris_spatial$realSum, .25)
 Q3_paris <- quantile(paris_spatial$realSum, .75)
 IQR_paris <- IQR(paris_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-paris_spatial_no_outliers <- subset(paris_spatial, paris_spatial$realSum> (Q1_paris - 1.5*IQR_paris) & paris_spatial$realSum< (Q3_paris + 1.5*IQR_paris))
-
-rome_spatial <- rome[,c(3,14:21)]
+paris_no_outliers <- subset(paris_spatial, paris_spatial$realSum> (Q1_paris - 1.5*IQR_paris) & paris_spatial$realSum< (Q3_paris + 1.5*IQR_paris))
+paris_spatial_no_outliers <- paris_no_outliers[,c(2,13:20)]
+rome_spatial <- rome
 #find Q1, Q3, and interquartile range for values in column A
 Q1_rome <- quantile(rome_spatial$realSum, .25)
 Q3_rome <- quantile(rome_spatial$realSum, .75)
 IQR_rome <- IQR(rome_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-rome_spatial_no_outliers <- subset(rome_spatial, rome_spatial$realSum> (Q1_rome - 1.5*IQR_rome) & rome_spatial$realSum< (Q3_rome + 1.5*IQR_rome))
-
-vienna_spatial <- vienna[,c(3,14:21)]
+rome_no_outliers <- subset(rome_spatial, rome_spatial$realSum> (Q1_rome - 1.5*IQR_rome) & rome_spatial$realSum< (Q3_rome + 1.5*IQR_rome))
+rome_spatial_no_outliers <- rome_no_outliers[,c(2,13:20)]
+vienna_spatial <- vienna
 #find Q1, Q3, and interquartile range for values in column A
 Q1_vienna <- quantile(vienna_spatial$realSum, .25)
 Q3_vienna <- quantile(vienna_spatial$realSum, .75)
 IQR_vienna <- IQR(vienna_spatial$realSum)
 #only keep rows in dataframe that have values within 1.5*IQR of Q1 and Q3
-vienna_spatial_no_outliers <- subset(vienna_spatial, vienna_spatial$realSum> (Q1_vienna - 1.5*IQR_vienna) & vienna_spatial$realSum< (Q3_vienna + 1.5*IQR_vienna))
-
+vienna_no_outliers <- subset(vienna_spatial, vienna_spatial$realSum> (Q1_vienna - 1.5*IQR_vienna) & vienna_spatial$realSum< (Q3_vienna + 1.5*IQR_vienna))
+vienna_spatial_no_outliers <- vienna_no_outliers[,c(2,13:20)]
 summary(barcelona_spatial)
 summary(barcelona_spatial_no_outliers)
 ```
@@ -193,55 +255,89 @@ final_vienna$cluster <- factor(final_vienna$cluster)
 ```
 
 ```{r}
+amsterdam_no_outliers <- amsterdam_no_outliers %>%
+  mutate(Cluster = final_amsterdam$cluster)
+athens_no_outliers <- athens_no_outliers %>%
+  mutate(Cluster = final_athens$cluster) 
+barcelona_no_outliers <- barcelona_no_outliers %>%
+  mutate(Cluster = final_barcelona$cluster)
+berlin_no_outliers <- berlin_no_outliers %>%
+  mutate(Cluster = final_berlin$cluster) 
+budapest_no_outliers <- budapest_no_outliers %>%
+  mutate(Cluster = final_budapest$cluster)
+lisbon_no_outliers <- lisbon_no_outliers %>%
+  mutate(Cluster = final_lisbon$cluster)
+london_no_outliers <- london_no_outliers %>%
+  mutate(Cluster = final_london$cluster)
+paris_no_outliers <- paris_no_outliers %>%
+  mutate(Cluster = final_paris$cluster) 
+rome_no_outliers <- rome_no_outliers %>%
+  mutate(Cluster = final_rome$cluster)
+vienna_no_outliers <- vienna_no_outliers %>%
+  mutate(Cluster = final_vienna$cluster)
+```
+```{r}
 amsterdam_spatial_clusters <- amsterdam_spatial_no_outliers %>%
   mutate(Cluster = final_amsterdam$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-
+amsterdam_spatial_clusters <- amsterdam_spatial_clusters %>%
+  add_column(city = "amsterdam")
 athens_spatial_clusters <- athens_spatial_no_outliers %>%
   mutate(Cluster = final_athens$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-
+athens_spatial_clusters <- athens_spatial_clusters %>%
+  add_column(city = "athens")
 barcelona_spatial_clusters <- barcelona_spatial_no_outliers %>%
   mutate(Cluster = final_barcelona$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-
+barcelona_spatial_clusters <- barcelona_spatial_clusters %>%
+  add_column(city = "barcelona")
 berlin_spatial_clusters <- berlin_spatial_no_outliers %>%
   mutate(Cluster = final_berlin$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-
+berlin_spatial_clusters <- berlin_spatial_clusters %>%
+  add_column(city = "berlin")
 budapest_spatial_clusters <- budapest_spatial_no_outliers %>%
   mutate(Cluster = final_budapest$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-
+budapest_spatial_clusters <- budapest_spatial_clusters %>%
+  add_column(city = "budapest")
 lisbon_spatial_clusters <- lisbon_spatial_no_outliers %>%
   mutate(Cluster = final_lisbon$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-
+lisbon_spatial_clusters <- lisbon_spatial_clusters %>%
+  add_column(city = "lisbon")
 london_spatial_clusters <- london_spatial_no_outliers %>%
   mutate(Cluster = final_london$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-
+london_spatial_clusters <- london_spatial_clusters %>%
+  add_column(city = "london")
 paris_spatial_clusters <- paris_spatial_no_outliers %>%
   mutate(Cluster = final_paris$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-
+paris_spatial_clusters <- paris_spatial_clusters %>%
+  add_column(city = "paris")
 rome_spatial_clusters <- rome_spatial_no_outliers %>%
   mutate(Cluster = final_rome$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
-
+rome_spatial_clusters <- rome_spatial_clusters %>%
+  add_column(city = "rome")
 vienna_spatial_clusters <- vienna_spatial_no_outliers %>%
   mutate(Cluster = final_vienna$cluster) %>%
   group_by(Cluster) %>%
   summarise_all("median")
+vienna_spatial_clusters <- vienna_spatial_clusters %>%
+  add_column(city = "vienna")
+cluster_city <- bind_rows(amsterdam_spatial_clusters, athens_spatial_clusters, barcelona_spatial_clusters, berlin_spatial_clusters, budapest_spatial_clusters, lisbon_spatial_clusters, london_spatial_clusters, paris_spatial_clusters, rome_spatial_clusters, vienna_spatial_clusters)
 ```
 
 ```{r}
@@ -491,3 +587,62 @@ fig <- subplot(fig, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10)
 
 fig
 ```
+```{r}
+
+fig_city_spatial <- bind_rows(amsterdam_no_outliers, athens_no_outliers, barcelona_no_outliers, berlin_no_outliers, budapest_no_outliers, lisbon_no_outliers, london_no_outliers, paris_no_outliers, rome_no_outliers, vienna_no_outliers)
+ui <- fluidPage(
+  titlePanel("TITLE"),
+   sidebarLayout(
+    sidebarPanel(
+      # Dropdown box for city
+    selectInput("city", label = "City:",
+              choices= unique(fig_city_spatial$city)),
+      # Slider range for price
+    sliderInput("realSum", label = "Price of Rental", min = 0, 
+        max = 1300, value = c(0, 1300)),
+      # Checkbox for day of the week
+    checkboxGroupInput("dayofweek", label = "Weekday vs. Weekend Rental", 
+    choices= unique(fig_city_spatial$dayofweek), selected = c("weekday", "weekend"))
+    ),
+  mainPanel(
+     plotlyOutput("scatterplot"),
+     plotlyOutput("clusterplot")
+    )
+  ))
+server <- function(input, output){
+  
+   output$scatterplot <- renderPlotly({
+     
+     fig_city_spatial <- fig_city_spatial %>% filter(dayofweek %in% input$dayofweek)
+     fig_city_spatial <- subset(fig_city_spatial, realSum >= min(input$realSum) & realSum <= max(input$realSum))
+     
+      fig8 <- fig_city_spatial[fig_city_spatial$city==input$city,]
+      fig8 <- fig8 %>%
+        plot_ly(
+          lat = ~lat,
+          lon = ~lng,
+          mode = "markers",
+          colors = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"),
+          color = ~Cluster,
+          type = 'scattermapbox',
+          hovertext = ~paste("Price: ", realSum) ,
+          legendgroup = ~Cluster, 
+          showlegend = T)
+      fig8 <- fig8 %>%
+        layout(
+          mapbox = list(
+            style = 'open-street-map',
+            zoom = 8,
+            center = list(lon = ~median(lng), lat = ~median(lat))))
+  })
+   
+   output$clusterplot <- renderPlotly({
+      spatial_clusters <- cluster_city[cluster_city$city==input$city,]
+      p <- ggparcoord(data = spatial_clusters, columns = c(2:8), groupColumn = 1, scale = "std") + labs(x = "Attributes", y = "value (in standard-deviation units)", title = "Clustering") +
+      scale_color_manual(values = c("1"="#ff595e", "2"="#ffca3a", "3"="#1982c4", "4"="#8ac926"))
+      ggplotly(p)
+  })
+}
+shinyApp(ui = ui, server = server)
+```
+
