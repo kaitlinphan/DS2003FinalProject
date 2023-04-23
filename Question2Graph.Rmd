@@ -131,12 +131,31 @@ rome <- rome %>%
   add_column(city = "rome")
 vienna <- vienna %>%
   add_column(city = "vienna")
+
+fig_city <- bind_rows(amsterdam, athens, barcelona, berlin, budapest, lisbon, london, paris, rome, vienna)
+
+fig_city <- unique(fig_city)
+
+# Delete unnecessary columns from dataset
+fig_city <- fig_city[,!names(fig_city) %in% 
+      c("X", "rest_index", "rest_index_norm", "room_shared", "room_private", "metro_dist")]
+
+# Reorder columns
+col_order <- c("city", "dayofweek", "lat",
+               "lng", "realSum", "room_type", "dist", "person_capacity", "bedrooms", "host_is_superhost", "multi", "biz", "cleanliness_rating", 
+               "guest_satisfaction_overall", "attr_index", "attr_index_norm")
+
+fig_city <- fig_city[, col_order]
+
+```
+
+```{r}
+# Summary stats for fig_city
+summary(fig_city)
 ```
 
 Base shiny plot that has ONLY a dropdown menu for cities
 ```{r}
-fig_city <- bind_rows(amsterdam, athens, barcelona, berlin, budapest, lisbon, london, paris, rome, vienna)
-
 ui <- fluidPage(
   titlePanel("TITLE"),
   sidebarLayout(  
@@ -176,7 +195,7 @@ ui <- fluidPage(
               choices= unique(fig_city$city)),
       # Slider range for price
     sliderInput("realSum", label = "Price of Rental", min = 0, 
-        max = 5000, value = c(0, 5000)),
+        max = 1000, value = c(0, 1000)),
       # Checkbox for day of the week
     checkboxGroupInput("dayofweek", label = "Weekday vs. Weekend Rental", 
     choices= unique(fig_city$dayofweek), selected = c("weekday", "weekend")),
@@ -200,17 +219,17 @@ server <- function(input, output){
      fig_city <- fig_city %>% filter(biz %in% input$biz)
      fig_city <- fig_city %>% filter(room_type %in% input$room_type)
      
-     ggplot(fig_city[fig_city$city==input$city,], aes(x=attr_index_norm, y=realSum, color=room_type, size=person_capacity)) + 
+     ggplot(fig_city[fig_city$city==input$city,], aes(x=dist, y=realSum, color=room_type, size=person_capacity)) + 
       geom_point(alpha=0.85) + xlab("X") + ylab("Y") + 
       ggtitle("TITLE") + 
       theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1)) +
       ylim(min(input$realSum), max(input$realSum)) +
+      xlim(0, 10) +
       theme_classic() +
       scale_color_manual(values =  c("Private room"='coral',
         "Entire home/apt"='lightblue',
-        "Shared room"='lightgreen'
-      )
-    )
+        "Shared room"='lightgreen')) +
+       guides(color = guide_legend(order = 1), size = guide_legend(order = 2))
   })
 }
 
@@ -218,4 +237,123 @@ shinyApp(ui = ui, server = server)
 ```
 
 
-consider facet graphs for business and vacation rentals; add dataset information and summary stats
+Consider facet graphs for business and vacation rentals; add dataset information and summary stats
+
+write about the different business capacities of different european cities; revenue/growth in tourism population not just for vacationers but for business people as well. 
+```{r}
+ui <- fluidPage(
+  titlePanel("TITLE"),
+   sidebarLayout(
+    sidebarPanel(
+      # Dropdown box for city
+    selectInput("city", label = "City:",
+              choices= unique(fig_city$city)),
+      # Slider range for price
+    sliderInput("realSum", label = "Price of Rental", min = 0, 
+        max = 1000, value = c(0, 1000)),
+      # Checkbox for day of the week
+    checkboxGroupInput("dayofweek", label = "Weekday vs. Weekend Rental", 
+    choices= unique(fig_city$dayofweek), selected = c("weekday", "weekend")),
+      # Checkbox for room type
+    checkboxGroupInput("room_type", label = "Rental Room Type", 
+    choices= unique(fig_city$room_type), selected = c("Private room", "Entire home/apt", "Shared room"))
+    ),
+  mainPanel(
+     plotOutput("scatterplot")
+    )
+  ))
+
+server <- function(input, output){
+  
+   output$scatterplot <- renderPlot({
+     
+     fig_city <- fig_city %>% filter(dayofweek %in% input$dayofweek)
+     fig_city <- fig_city %>% filter(room_type %in% input$room_type)
+     newbiz <- c("0" = "Vacation", "1" = "Business")
+     
+     ggplot(fig_city[fig_city$city==input$city,], aes(x=dist, y=realSum, color=room_type, size=person_capacity)) + 
+      geom_point(alpha=0.85) + xlab("X") + ylab("Y") + 
+      facet_grid(biz~., labeller = labeller(biz = newbiz)) +
+      ggtitle("TITLE") + 
+      theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1)) +
+      ylim(min(input$realSum), max(input$realSum)) +
+      xlim(0, 10) +
+      theme_bw() +
+      scale_color_manual(values =  c("Private room"='coral',
+        "Entire home/apt"='lightblue',
+        "Shared room"='lightgreen')) +
+       guides(color = guide_legend(order = 1), size = guide_legend(order = 2))
+  })
+}
+
+shinyApp(ui = ui, server = server) 
+```
+
+```{r}
+ui <- fluidPage(
+  titlePanel("Question 2: Comparison between Vacation and Business Rentals"),
+   sidebarLayout(
+    sidebarPanel( 
+     selectInput("city", label = "City:",
+              choices= unique(fig_city$city)),
+      # Slider range for price
+    sliderInput("realSum", label = "Price of Rental", min = 0, 
+        max = 1000, value = c(0, 1000)),
+      # Checkbox for day of the week
+    checkboxGroupInput("dayofweek", label = "Weekday vs. Weekend Rental", 
+    choices= unique(fig_city$dayofweek), selected = c("weekday", "weekend")),
+      # Checkbox for room type
+    checkboxGroupInput("room_type", label = "Rental Room Type", 
+    choices= unique(fig_city$room_type), selected = c("Private room", "Entire home/apt", "Shared room"))
+  ),
+    mainPanel(
+      tabsetPanel(
+      tabPanel("Scatterplot", plotOutput("scatterplot")),
+      tabPanel("Data", dataTableOutput("data_table")),
+      tabPanel("Variable Summary", verbatimTextOutput("summary_var")))
+  )))
+
+server <- function(input, output){
+    
+    output$scatterplot <- renderPlot({
+     
+     fig_city <- fig_city %>% filter(dayofweek %in% input$dayofweek)
+     fig_city <- fig_city %>% filter(room_type %in% input$room_type)
+     newbiz <- c("0" = "Vacation", "1" = "Business")
+     
+     ggplot(fig_city[fig_city$city==input$city,], aes(x=dist, y=realSum, color=room_type, size=person_capacity)) + 
+      geom_point(alpha=0.85) + xlab("Distance from City Center (km)") + ylab("Price of Airbnb (USD)") + 
+      facet_grid(biz~., labeller = labeller(biz = newbiz)) +
+      ggtitle("Relationship between Airbnb Price, Location, and Purpose of Rental") + 
+      theme(axis.text.x = element_text(angle=90, vjust=0.5, hjust=1)) +
+      ylim(min(input$realSum), max(input$realSum)) +
+      xlim(0, 10) +
+      theme_bw() +
+      scale_color_manual(values =  c("Private room"='coral',
+        "Entire home/apt"='lightblue',
+        "Shared room"='lightgreen')) +
+       guides(color = guide_legend(order = 1), size = guide_legend(order = 2)) +
+       labs(caption = "The figure above demonstrates a trend between Airbnb travel purpose, price, and distance from the 
+       city center. Overall, rental price has an inverse relationship with distance: the closer to the city center a 
+       property is, the more expensive it often is. Additionally, vacation rentals are more spread out over the 
+       metropolitan area, while rentals for business purposes tend to cluster closely around the city center.") +
+       theme(plot.caption = element_text(face = "bold"))
+  })
+    
+    output$data_table <- renderDataTable({
+      fig_city <- fig_city %>% filter(dayofweek %in% input$dayofweek)
+      fig_city <- fig_city %>% filter(room_type %in% input$room_type)
+      fig_city[fig_city$city==input$city,]
+    })
+    
+    output$summary_var <- renderPrint({
+      fig_city <- fig_city %>% filter(dayofweek %in% input$dayofweek)
+      fig_city <- fig_city %>% filter(room_type %in% input$room_type)
+      summary(fig_city[fig_city$city==input$city, c("realSum", "person_capacity", "cleanliness_rating", "guest_satisfaction_overall", "bedrooms", "dist", "attr_index")])
+    })
+}
+
+shinyApp(ui = ui, server = server, options = list(width = 500, height = 500)) 
+```
+
+
